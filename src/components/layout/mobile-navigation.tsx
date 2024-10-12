@@ -22,7 +22,7 @@ export default function MobileNavigation({
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="lg:hidden fixed inset-x-0 bottom-0 bg-white shadow-lg"
+      className="sm:hidden fixed inset-x-0 bottom-0 bg-white shadow-lg"
     >
       <div className="flex justify-around items-center h-16">
         <Button variant="ghost" onClick={() => setActiveView('home')}>

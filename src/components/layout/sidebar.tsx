@@ -6,7 +6,7 @@ import { Eye, Image, Type, Wifi, Info, MoreHorizontal } from 'lucide-react'
 
 export default function Sidebar() {
   return (
-    <div className="hidden lg:flex lg:w-20 bg-white lg:rounded-l-3xl p-4 lg:py-6 flex-col items-center justify-between lg:space-y-8 shadow-lg">
+    <div className="hidden sm:flex sm:w-20 bg-white sm:rounded-l-3xl p-4 sm:py-6 flex-col items-center justify-between sm:space-y-8 shadow-lg">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>

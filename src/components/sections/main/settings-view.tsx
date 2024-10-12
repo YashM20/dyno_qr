@@ -5,7 +5,39 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export default function SettingsView() {
+interface SettingsViewProps {
+  qrSize: number
+  setQrSize: (value: number) => void
+  qrType: 'canvas' | 'svg'
+  setQrType: (value: 'canvas' | 'svg') => void
+  qrDotType: 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'
+  setQrDotType: (value: 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded') => void
+  qrDotColor: string
+  setQrDotColor: (value: string) => void
+  qrBackgroundColor: string
+  setQrBackgroundColor: (value: string) => void
+  qrCornerSquareType: 'dot' | 'square' | 'extra-rounded'
+  setQrCornerSquareType: (value: 'dot' | 'square' | 'extra-rounded') => void
+  qrCornerDotType: 'dot' | 'square'
+  setQrCornerDotType: (value: 'dot' | 'square') => void
+}
+
+export default function SettingsView({
+  qrSize,
+  setQrSize,
+  qrType,
+  setQrType,
+  qrDotType,
+  setQrDotType,
+  qrDotColor,
+  setQrDotColor,
+  qrBackgroundColor,
+  setQrBackgroundColor,
+  qrCornerSquareType,
+  setQrCornerSquareType,
+  qrCornerDotType,
+  setQrCornerDotType
+}: SettingsViewProps) {
   return (
     <motion.div
       key="settings"
