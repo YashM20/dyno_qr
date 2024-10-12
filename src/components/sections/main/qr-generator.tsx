@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Sidebar from '@/components/layout/sidebar'
 import MobileNavigation from '@/components/layout/mobile-navigation'
@@ -8,7 +8,9 @@ import HomeView from '@/components/sections/main/home-view'
 import SettingsView from '@/components/sections/main/settings-view'
 import QrPreview from '@/components/sections/preview/qr-preview'
 import MobileQrPreview from '@/components/sections/preview/mobile-qr-preview'
-import QrCode from '@/components/qr-code'
+import dynamic from 'next/dynamic'
+
+const QrCode = dynamic(() => import('@/components/qr-code'), { ssr: false })
 
 export function QrGenerator() {
   const [isUpiMode, setIsUpiMode] = useState(false)
@@ -26,10 +28,10 @@ export function QrGenerator() {
   // QR Code styling options
   const [qrSize, setQrSize] = useState(300)
   const [qrType, setQrType] = useState<'canvas' | 'svg'>('svg')
-  const [qrDotType, setQrDotType] = useState<'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'>('rounded')
+  const [qrDotType, setQrDotType] = useState<'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'>('square')
   const [qrDotColor, setQrDotColor] = useState('#000000')
   const [qrBackgroundColor, setQrBackgroundColor] = useState('#ffffff')
-  const [qrCornerSquareType, setQrCornerSquareType] = useState<'dot' | 'square' | 'extra-rounded'>('dot')
+  const [qrCornerSquareType, setQrCornerSquareType] = useState<'dot' | 'square' | 'extra-rounded'>('extra-rounded')
   const [qrCornerDotType, setQrCornerDotType] = useState<'dot' | 'square'>('dot')
 
   const toggleQrPreview = () => setShowQrPreview(!showQrPreview)
@@ -89,28 +91,32 @@ export function QrGenerator() {
         </AnimatePresence>
       </div>
       <QrPreview>
-        <QrCode
-          data={qrData}
-          size={qrSize}
-          type={qrType}
-          dotType={qrDotType}
-          dotColor={qrDotColor}
-          backgroundColor={qrBackgroundColor}
-          cornerSquareType={qrCornerSquareType}
-          cornerDotType={qrCornerDotType}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <QrCode
+            data={qrData}
+            size={qrSize}
+            type={qrType}
+            dotType={qrDotType}
+            dotColor={qrDotColor}
+            backgroundColor={qrBackgroundColor}
+            cornerSquareType={qrCornerSquareType}
+            cornerDotType={qrCornerDotType}
+          />
+        </Suspense>
       </QrPreview>
       <MobileQrPreview showQrPreview={showQrPreview}>
-        <QrCode
-          data={qrData}
-          size={qrSize}
-          type={qrType}
-          dotType={qrDotType}
-          dotColor={qrDotColor}
-          backgroundColor={qrBackgroundColor}
-          cornerSquareType={qrCornerSquareType}
-          cornerDotType={qrCornerDotType}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <QrCode
+            data={qrData}
+            size={qrSize}
+            type={qrType}
+            dotType={qrDotType}
+            dotColor={qrDotColor}
+            backgroundColor={qrBackgroundColor}
+            cornerSquareType={qrCornerSquareType}
+            cornerDotType={qrCornerDotType}
+          />
+        </Suspense>
       </MobileQrPreview>
       <MobileNavigation
         activeView={activeView}

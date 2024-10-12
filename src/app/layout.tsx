@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="fixed top-4 right-4 z-50">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </div>
           {children}
         </ThemeProvider>

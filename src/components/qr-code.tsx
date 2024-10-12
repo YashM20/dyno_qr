@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useEffect, useRef } from 'react'
 import QRCodeStyling, { Options } from 'qr-code-styling'
 
@@ -28,7 +29,7 @@ export default function QrCode({
   const qrCodeRef = useRef<QRCodeStyling | null>(null)
 
   useEffect(() => {
-    if (!qrCodeRef.current) {
+    if (!qrCodeRef.current && document.readyState === 'complete') {
       qrCodeRef.current = new QRCodeStyling({
         width: size,
         height: size,
