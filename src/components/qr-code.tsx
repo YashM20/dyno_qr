@@ -82,5 +82,5 @@ export default function QrCode({
     }
   }, [data, size, type, dotType, dotColor, backgroundColor, cornerSquareType, cornerDotType])
 
-  return <div ref={ref} />
+  return <div ref={ref} className="qr-code-element" />
 }

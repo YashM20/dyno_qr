@@ -142,26 +142,26 @@ export default function HomeView({
           {isUpiMode ? (
             <div className="space-y-4">
               <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
                 placeholder="UPI ID"
                 value={localUpiId}
                 onChange={handleUpiIdChange}
               />
               <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
                 placeholder="Payee Name"
                 value={localPayeeName}
                 onChange={handlePayeeNameChange}
               />
               <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
                 type="number"
                 placeholder="Amount"
                 value={localAmount}
                 onChange={handleAmountChange}
               />
               <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
                 placeholder="Transaction Notes"
                 value={localTransactionNote}
                 onChange={handleTransactionNoteChange}
@@ -169,7 +169,7 @@ export default function HomeView({
             </div>
           ) : (
             <Input
-              className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+              className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100 transition-colors"
               placeholder="Enter your text or URL"
               value={localQrContent}
               onChange={handleQrContentChange}

@@ -4,25 +4,31 @@ import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ChevronUp, ChevronDown, Download } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import downloadQr from '@/lib/downloadQr'
 
 interface QrPreviewProps {
   children: React.ReactNode
 }
 
 export default function QrPreview({ children }: QrPreviewProps) {
+  const handleDownload = (format: 'jpeg' | 'png') => {
+    downloadQr(format);
+  };
+
   return (
-    <div className="hidden sm:block w-96">
-      <Card className="bg-blue-900 text-white sm:rounded-r-3xl overflow-hidden h-full">
+    <div className="hidden sm:flex w-96 items-center  h-full">
+      <Card className="flex flex-col  bg-blue-900 text-white sm:rounded-r-3xl overflow-hidden  h-full w-full">
         <CardContent className="p-8">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-white w-full aspect-square rounded-xl sm:rounded-2xl mb-6 sm:mb-8 flex items-center justify-center"
+            className="bg-white w-full aspect-square rounded-xl sm:rounded-2xl mb-6 sm:mb-8 flex items-center justify-center qr-code-element"
           >
             {children}
           </motion.div>
-          <div className="space-y-4">
+          <div className="space-y-4 hidden">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -63,13 +69,14 @@ export default function QrPreview({ children }: QrPreviewProps) {
             transition={{ duration: 0.3, delay: 0.5 }}
             className="flex space-x-4 mt-6 sm:mt-8"
           >
-            {['JPG', 'SVG/EPS'].map((format, index) => (
+            {['jpeg', 'png'].map((format, index) => (
               <Button
                 key={format}
+                onClick={() => handleDownload(format as 'jpeg' | 'png')}
                 className={`flex-1 ${index === 0 ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600'} rounded-full py-3 sm:py-4 text-base sm:text-lg transition-colors`}
               >
                 <Download className="h-5 w-5 mr-2" />
-                {format}
+                {format.toUpperCase()}
               </Button>
             ))}
           </motion.div>

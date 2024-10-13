@@ -11,7 +11,7 @@ export default function Sidebar() {
         <Tooltip>
           <TooltipTrigger>
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center transition-transform hover:scale-110">
-              <span className="text-white font-bold text-2xl">G</span>
+              <span className="text-white font-bold text-2xl">D</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>
