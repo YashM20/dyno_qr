@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 
 interface SettingsViewProps {
   qrSize: number
@@ -20,6 +21,12 @@ interface SettingsViewProps {
   setQrCornerSquareType: (value: 'dot' | 'square' | 'extra-rounded') => void
   qrCornerDotType: 'dot' | 'square'
   setQrCornerDotType: (value: 'dot' | 'square') => void
+  qrImageUrl: string
+  setQrImageUrl: (value: string) => void
+  qrImageSize: number
+  setQrImageSize: (value: number) => void
+  qrErrorCorrectionLevel: 'L' | 'M' | 'Q' | 'H'
+  setQrErrorCorrectionLevel: (value: 'L' | 'M' | 'Q' | 'H') => void
 }
 
 export default function SettingsView({
@@ -36,7 +43,13 @@ export default function SettingsView({
   qrCornerSquareType,
   setQrCornerSquareType,
   qrCornerDotType,
-  setQrCornerDotType
+  setQrCornerDotType,
+  qrImageUrl,
+  setQrImageUrl,
+  qrImageSize,
+  setQrImageSize,
+  qrErrorCorrectionLevel,
+  setQrErrorCorrectionLevel
 }: SettingsViewProps) {
   return (
     <motion.div
@@ -62,12 +75,39 @@ export default function SettingsView({
         </Select>
       </div>
       <div>
+        <Label htmlFor="qr-image-url" className="block mb-2 text-blue-900 font-semibold">QR Code Image URL</Label>
+        <Input
+          id="qr-image-url"
+          value={qrImageUrl}
+          onChange={(e) => setQrImageUrl(e.target.value)}
+          placeholder="Enter image URL"
+          className="w-full p-4 text-lg"
+        />
+      </div>
+      <div>
+        <Label htmlFor="qr-image-size" className="block mb-2 text-blue-900 font-semibold">QR Code Image Size</Label>
+        <Input
+          id="qr-image-size"
+          type="number"
+          min={0.1}
+          max={1}
+          step={0.1}
+          value={qrImageSize}
+          onChange={(e) => setQrImageSize(parseFloat(e.target.value))}
+          className="w-full p-4 text-lg"
+        />
+      </div>
+      <div>
         <Label htmlFor="error-correction" className="block mb-2 text-blue-900 font-semibold">Error Correction Level</Label>
-        <RadioGroup defaultValue="medium" className="flex flex-wrap gap-4">
-          {['low', 'medium', 'high'].map((level) => (
+        <RadioGroup
+          value={qrErrorCorrectionLevel}
+          onValueChange={(value) => setQrErrorCorrectionLevel(value as 'L' | 'M' | 'Q' | 'H')}
+          className="flex flex-wrap gap-4"
+        >
+          {['L', 'M', 'Q', 'H'].map((level) => (
             <div key={level} className="flex items-center space-x-2">
               <RadioGroupItem value={level} id={level} />
-              <Label htmlFor={level} className="capitalize">{level}</Label>
+              <Label htmlFor={level}>{level}</Label>
             </div>
           ))}
         </RadioGroup>

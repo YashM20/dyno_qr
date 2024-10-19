@@ -1,12 +1,16 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useCallback } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { QrCode, CreditCard, Settings } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useDebounce } from '@/hooks/useDebounce'
-import { useState, useEffect } from 'react'
-import { QrCode, CreditCard } from 'lucide-react'
-import { useTheme } from 'next-themes'
 
 interface HomeViewProps {
   isUpiMode: boolean
@@ -25,6 +29,24 @@ interface HomeViewProps {
   setTransactionRef: (value: string) => void
   transactionNote: string
   setTransactionNote: (value: string) => void
+  qrSize: number
+  setQrSize: (value: number) => void
+  qrType: 'canvas' | 'svg'
+  setQrType: (value: 'canvas' | 'svg') => void
+  qrDotType: 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'
+  setQrDotType: (value: 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded') => void
+  qrDotColor: string
+  setQrDotColor: (value: string) => void
+  qrBackgroundColor: string
+  setQrBackgroundColor: (value: string) => void
+  qrCornerSquareType: 'dot' | 'square' | 'extra-rounded'
+  setQrCornerSquareType: (value: 'dot' | 'square' | 'extra-rounded') => void
+  qrCornerDotType: 'dot' | 'square'
+  setQrCornerDotType: (value: 'dot' | 'square') => void
+  qrImageUrl: string
+  setQrImageUrl: (value: string) => void
+  qrErrorCorrectionLevel: 'L' | 'M' | 'Q' | 'H'
+  setQrErrorCorrectionLevel: (value: 'L' | 'M' | 'Q' | 'H') => void
 }
 
 export default function HomeView({
@@ -43,20 +65,62 @@ export default function HomeView({
   transactionRef,
   setTransactionRef,
   transactionNote,
-  setTransactionNote
+  setTransactionNote,
+  qrSize,
+  setQrSize,
+  qrType,
+  setQrType,
+  qrDotType,
+  setQrDotType,
+  qrDotColor,
+  setQrDotColor,
+  qrBackgroundColor,
+  setQrBackgroundColor,
+  qrCornerSquareType,
+  setQrCornerSquareType,
+  qrCornerDotType,
+  setQrCornerDotType,
+  qrImageUrl,
+  setQrImageUrl,
+  qrErrorCorrectionLevel,
+  setQrErrorCorrectionLevel
 }: HomeViewProps) {
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false)
+
+  // Local state for all fields
   const [localQrContent, setLocalQrContent] = useState(qrContent)
   const [localUpiId, setLocalUpiId] = useState(upiId)
   const [localPayeeName, setLocalPayeeName] = useState(payeeName)
   const [localAmount, setLocalAmount] = useState(amount)
+  const [localCurrency, setLocalCurrency] = useState(currency)
+  const [localTransactionRef, setLocalTransactionRef] = useState(transactionRef)
   const [localTransactionNote, setLocalTransactionNote] = useState(transactionNote)
+  const [localQrSize, setLocalQrSize] = useState(qrSize)
+  const [localQrDotColor, setLocalQrDotColor] = useState(qrDotColor)
+  const [localQrBackgroundColor, setLocalQrBackgroundColor] = useState(qrBackgroundColor)
+  const [localQrImageUrl, setLocalQrImageUrl] = useState(qrImageUrl)
+  const [localQrType, setLocalQrType] = useState(qrType)
+  const [localQrDotType, setLocalQrDotType] = useState(qrDotType)
+  const [localQrCornerSquareType, setLocalQrCornerSquareType] = useState(qrCornerSquareType)
+  const [localQrCornerDotType, setLocalQrCornerDotType] = useState(qrCornerDotType)
+  const [localQrErrorCorrectionLevel, setLocalQrErrorCorrectionLevel] = useState(qrErrorCorrectionLevel)
 
+  // Debounced values
   const debouncedQrContent = useDebounce(localQrContent, 300)
   const debouncedUpiId = useDebounce(localUpiId, 300)
   const debouncedPayeeName = useDebounce(localPayeeName, 300)
   const debouncedAmount = useDebounce(localAmount, 300)
+  const debouncedCurrency = useDebounce(localCurrency, 300)
+  const debouncedTransactionRef = useDebounce(localTransactionRef, 300)
   const debouncedTransactionNote = useDebounce(localTransactionNote, 300)
+  const debouncedQrSize = useDebounce(localQrSize, 300)
+  const debouncedQrImageUrl = useDebounce(localQrImageUrl, 300)
+  const debouncedQrType = useDebounce(localQrType, 300)
+  const debouncedQrDotType = useDebounce(localQrDotType, 300)
+  const debouncedQrCornerSquareType = useDebounce(localQrCornerSquareType, 300)
+  const debouncedQrCornerDotType = useDebounce(localQrCornerDotType, 300)
 
+  // Update parent state with debounced values
   useEffect(() => {
     setQrContent(debouncedQrContent)
   }, [debouncedQrContent, setQrContent])
@@ -74,30 +138,61 @@ export default function HomeView({
   }, [debouncedAmount, setAmount])
 
   useEffect(() => {
+    setCurrency(debouncedCurrency)
+  }, [debouncedCurrency, setCurrency])
+
+  useEffect(() => {
+    setTransactionRef(debouncedTransactionRef)
+  }, [debouncedTransactionRef, setTransactionRef])
+
+  useEffect(() => {
     setTransactionNote(debouncedTransactionNote)
   }, [debouncedTransactionNote, setTransactionNote])
 
-  const handleQrContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalQrContent(e.target.value)
-  }
+  useEffect(() => {
+    setQrSize(debouncedQrSize)
+  }, [debouncedQrSize, setQrSize])
 
-  const handleUpiIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalUpiId(e.target.value)
-  }
+  useEffect(() => {
+    setQrImageUrl(debouncedQrImageUrl)
+  }, [debouncedQrImageUrl, setQrImageUrl])
 
-  const handlePayeeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalPayeeName(e.target.value)
-  }
+  useEffect(() => {
+    setQrType(debouncedQrType)
+  }, [debouncedQrType, setQrType])
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalAmount(e.target.value)
-  }
+  useEffect(() => {
+    setQrDotType(debouncedQrDotType)
+  }, [debouncedQrDotType, setQrDotType])
 
-  const handleTransactionNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalTransactionNote(e.target.value)
-  }
+  useEffect(() => {
+    setQrCornerSquareType(debouncedQrCornerSquareType)
+  }, [debouncedQrCornerSquareType, setQrCornerSquareType])
 
-  const { theme } = useTheme()
+  useEffect(() => {
+    setQrCornerDotType(debouncedQrCornerDotType)
+  }, [debouncedQrCornerDotType, setQrCornerDotType])
+
+  useEffect(() => {
+    setQrErrorCorrectionLevel(localQrErrorCorrectionLevel)
+  }, [localQrErrorCorrectionLevel, setQrErrorCorrectionLevel])
+
+  // Color change handlers
+  const handleDotColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalQrDotColor(e.target.value)
+  }, [])
+
+  const handleDotColorComplete = useCallback(() => {
+    setQrDotColor(localQrDotColor)
+  }, [localQrDotColor, setQrDotColor])
+
+  const handleBackgroundColorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalQrBackgroundColor(e.target.value)
+  }, [])
+
+  const handleBackgroundColorComplete = useCallback(() => {
+    setQrBackgroundColor(localQrBackgroundColor)
+  }, [localQrBackgroundColor, setQrBackgroundColor])
 
   return (
     <motion.div
@@ -108,75 +203,256 @@ export default function HomeView({
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <div className="space-y-2">
-        <h1 className="text-3xl sm:text-5xl font-bold text-blue-900 mb-4">QR Code Generator</h1>
-        <p className="text-blue-600 mb-6 sm:mb-8 text-base sm:text-lg">Your QR code will be generated automatically</p>
-      </div>
+      <h2 className="text-2xl font-bold text-blue-900 mb-4">Generate QR Code</h2>
 
-      <div className="flex space-x-4 mb-6">
-        <Button
-          onClick={() => setIsUpiMode(false)}
-          className={`flex-1 ${!isUpiMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
-        >
-          <QrCode className="mr-2 h-5 w-5" />
-          Simple QR
-        </Button>
-        <Button
-          onClick={() => setIsUpiMode(true)}
-          className={`flex-1 ${isUpiMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
-        >
-          <CreditCard className="mr-2 h-5 w-5" />
-          UPI QR
-        </Button>
-      </div>
+      <Tabs defaultValue={isUpiMode ? "upi" : "simple"} onValueChange={(value) => setIsUpiMode(value === "upi")}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="simple">
+            <QrCode className="mr-2 h-5 w-5" />
+            Simple QR
+          </TabsTrigger>
+          <TabsTrigger value="upi">
+            <CreditCard className="mr-2 h-5 w-5" />
+            UPI QR
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="simple">
+          <Card>
+            <CardHeader>
+              <CardTitle>Simple QR Code</CardTitle>
+              <CardDescription>Enter the content for your QR code.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Label htmlFor="qr-content">QR Code Content</Label>
+                <Input
+                  id="qr-content"
+                  value={localQrContent}
+                  onChange={(e) => setLocalQrContent(e.target.value)}
+                  placeholder="Enter URL or text"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="upi">
+          <Card>
+            <CardHeader>
+              <CardTitle>UPI QR Code</CardTitle>
+              <CardDescription>Enter the UPI payment details.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="upi-id">UPI ID</Label>
+                  <Input
+                    id="upi-id"
+                    value={localUpiId}
+                    onChange={(e) => setLocalUpiId(e.target.value)}
+                    placeholder="Enter UPI ID"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="payee-name">Payee Name</Label>
+                  <Input
+                    id="payee-name"
+                    value={localPayeeName}
+                    onChange={(e) => setLocalPayeeName(e.target.value)}
+                    placeholder="Enter payee name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="amount">Amount</Label>
+                  <Input
+                    id="amount"
+                    value={localAmount}
+                    onChange={(e) => setLocalAmount(e.target.value)}
+                    placeholder="Enter amount"
+                    type="number"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="currency">Currency</Label>
+                  <Input
+                    id="currency"
+                    value={localCurrency}
+                    onChange={(e) => setLocalCurrency(e.target.value)}
+                    placeholder="Enter currency"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="transaction-ref">Transaction Reference</Label>
+                  <Input
+                    id="transaction-ref"
+                    value={localTransactionRef}
+                    onChange={(e) => setLocalTransactionRef(e.target.value)}
+                    placeholder="Enter transaction reference"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="transaction-note">Transaction Note</Label>
+                  <Input
+                    id="transaction-note"
+                    value={localTransactionNote}
+                    onChange={(e) => setLocalTransactionNote(e.target.value)}
+                    placeholder="Enter transaction note"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={isUpiMode ? 'upi' : 'simple'}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="space-y-4"
-        >
-          {isUpiMode ? (
-            <div className="space-y-4">
-              <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
-                placeholder="UPI ID"
-                value={localUpiId}
-                onChange={handleUpiIdChange}
-              />
-              <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
-                placeholder="Payee Name"
-                value={localPayeeName}
-                onChange={handlePayeeNameChange}
-              />
-              <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
-                type="number"
-                placeholder="Amount"
-                value={localAmount}
-                onChange={handleAmountChange}
-              />
-              <Input
-                className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100  transition-colors"
-                placeholder="Transaction Notes"
-                value={localTransactionNote}
-                onChange={handleTransactionNoteChange}
-              />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>QR Code Settings</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div>
+              <Label htmlFor="qr-dot-color">Dot Color</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="qr-dot-color"
+                  type="color"
+                  value={localQrDotColor}
+                  onChange={handleDotColorChange}
+                  onBlur={handleDotColorComplete}
+                  className="w-12 h-12 p-1"
+                />
+                <Input
+                  value={localQrDotColor}
+                  onChange={handleDotColorChange}
+                  onBlur={handleDotColorComplete}
+                  placeholder="#000000"
+                  className="flex-grow"
+                />
+              </div>
             </div>
-          ) : (
-            <Input
-              className="w-full text-lg sm:text-xl p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-blue-200 focus:border-blue-500 bg-gray-100 transition-colors"
-              placeholder="Enter your text or URL"
-              value={localQrContent}
-              onChange={handleQrContentChange}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
+
+            <div>
+              <Label htmlFor="qr-background-color">Background Color</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="qr-background-color"
+                  type="color"
+                  value={localQrBackgroundColor}
+                  onChange={handleBackgroundColorChange}
+                  onBlur={handleBackgroundColorComplete}
+                  className="w-12 h-12 p-1"
+                />
+                <Input
+                  value={localQrBackgroundColor}
+                  onChange={handleBackgroundColorChange}
+                  onBlur={handleBackgroundColorComplete}
+                  placeholder="#ffffff"
+                  className="flex-grow"
+                />
+              </div>
+            </div>
+
+            {showAdvancedSettings && (
+              <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <Label htmlFor="qr-type">QR Code Type</Label>
+                    <Select value={localQrType} onValueChange={(value: 'canvas' | 'svg') => setLocalQrType(value)}>
+                      <SelectTrigger id="qr-type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="canvas">Canvas</SelectItem>
+                        <SelectItem value="svg">SVG</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="qr-dot-type">Dot Type</Label>
+                    <Select value={localQrDotType} onValueChange={(value: any) => setLocalQrDotType(value)}>
+                      <SelectTrigger id="qr-dot-type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['rounded', 'dots', 'classy', 'classy-rounded', 'square', 'extra-rounded'].map((type) => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="qr-image-url">Image URL</Label>
+                    <Input
+                      id="qr-image-url"
+                      value={localQrImageUrl}
+                      onChange={(e) => setLocalQrImageUrl(e.target.value)}
+                      placeholder="Enter image URL"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="qr-corner-square-type">Corner Square Type</Label>
+                    <Select value={localQrCornerSquareType} onValueChange={(value: any) => setLocalQrCornerSquareType(value)}>
+                      <SelectTrigger id="qr-corner-square-type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['dot', 'square', 'extra-rounded'].map((type) => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="qr-corner-dot-type">Corner Dot Type</Label>
+                    <Select value={localQrCornerDotType} onValueChange={(value: any) => setLocalQrCornerDotType(value)}>
+                      <SelectTrigger id="qr-corner-dot-type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="dot">Dot</SelectItem>
+                        <SelectItem value="square">Square</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="qr-error-correction">Error Correction Level</Label>
+                    <RadioGroup
+                      value={localQrErrorCorrectionLevel}
+                      onValueChange={(value: 'L' | 'M' | 'Q' | 'H') => setLocalQrErrorCorrectionLevel(value)}
+                      className="flex space-x-4"
+                    >
+                      {['L', 'M', 'Q', 'H'].map((level) => (
+                        <div key={level} className="flex items-center">
+                          <RadioGroupItem value={level} id={`ecl-${level}`} />
+                          <Label htmlFor={`ecl-${level}`} className="ml-2">{level}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   )
 }

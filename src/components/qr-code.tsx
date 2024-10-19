@@ -1,10 +1,9 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { useEffect, useRef } from 'react'
-import QRCodeStyling, { Options } from 'qr-code-styling'
+import { useEffect, useRef, useState } from 'react'
+import QRCodeStyling, { Options, FileExtension } from 'qr-code-styling'
 
-interface QrCodeProps {
+export interface QrCodeProps {
   data: string
   size: number
   type: 'canvas' | 'svg'
@@ -13,9 +12,12 @@ interface QrCodeProps {
   backgroundColor: string
   cornerSquareType: 'dot' | 'square' | 'extra-rounded'
   cornerDotType: 'dot' | 'square'
+  imageUrl?: string
+  imageSize?: number
+  errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H'
 }
 
-export default function QrCode({
+export function QrCode({
   data,
   size,
   type,
@@ -23,64 +25,70 @@ export default function QrCode({
   dotColor,
   backgroundColor,
   cornerSquareType,
-  cornerDotType
+  cornerDotType,
+  imageUrl,
+  imageSize = 0.4,
+  errorCorrectionLevel = 'M'
 }: QrCodeProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const qrCodeRef = useRef<QRCodeStyling | null>(null)
+  const [qrCode, setQrCode] = useState<QRCodeStyling | null>(null)
 
   useEffect(() => {
-    if (!qrCodeRef.current && document.readyState === 'complete') {
-      qrCodeRef.current = new QRCodeStyling({
-        width: size,
-        height: size,
-        type: type,
-        data: data,
-        dotsOptions: {
-          color: dotColor,
-          type: dotType
-        },
-        backgroundOptions: {
-          color: backgroundColor,
-        },
-        cornersSquareOptions: {
-          type: cornerSquareType
-        },
-        cornersDotOptions: {
-          type: cornerDotType
-        }
-      })
-    }
-
-    if (ref.current && qrCodeRef.current) {
-      ref.current.innerHTML = ''
-      qrCodeRef.current.append(ref.current)
+    if (!qrCode) {
+      const newQrCode = new QRCodeStyling(getQrOptions())
+      setQrCode(newQrCode)
     }
   }, [])
 
   useEffect(() => {
-    if (qrCodeRef.current) {
-      const options: Partial<Options> = {
-        width: size,
-        height: size,
-        type: type,
-        data: data,
-        dotsOptions: {
-          color: dotColor,
-          type: dotType
-        },
-        backgroundOptions: {
-          color: backgroundColor,
-        },
-        cornersSquareOptions: {
-          type: cornerSquareType
-        },
-        cornersDotOptions: {
-          type: cornerDotType
-        }
-      }
-      qrCodeRef.current.update(options)
+    if (qrCode && ref.current) {
+      ref.current.innerHTML = ''
+      qrCode.append(ref.current)
     }
-  }, [data, size, type, dotType, dotColor, backgroundColor, cornerSquareType, cornerDotType])
+  }, [qrCode])
 
-  return <div ref={ref} className="qr-code-element" />
+  useEffect(() => {
+    if (qrCode) {
+      qrCode.update(getQrOptions())
+    }
+  }, [data, size, type, dotType, dotColor, backgroundColor, cornerSquareType, cornerDotType, imageUrl, imageSize, errorCorrectionLevel])
+
+  const getQrOptions = (): Options => ({
+    width: size,
+    height: size,
+    type: type,
+    data: data,
+    image: imageUrl,
+    dotsOptions: {
+      color: dotColor,
+      type: dotType
+    },
+    backgroundOptions: {
+      color: backgroundColor,
+    },
+    cornersSquareOptions: {
+      type: cornerSquareType
+    },
+    cornersDotOptions: {
+      type: cornerDotType
+    },
+    imageOptions: imageUrl ? {
+      hideBackgroundDots: true,
+      imageSize: imageSize,
+      crossOrigin: 'anonymous',
+    } : {},
+    qrOptions: {
+      errorCorrectionLevel: errorCorrectionLevel
+    }
+  })
+
+  const download = (fileExtension: FileExtension) => {
+    qrCode?.download({ extension: fileExtension })
+  }
+
+  return (
+    <div>
+      <div ref={ref} className="qr-code-element" />
+    </div>
+  )
 }
