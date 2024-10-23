@@ -18,14 +18,14 @@ export default function QrPreview({ qrCode, children }: QrPreviewProps) {
   };
 
   return (
-    <div className="flex w-full md:w-96 items-center h-full">
+    <div className="flex w-full md:w-72 lg:w-96 items-center h-full">
       <Card className="flex flex-col bg-blue-900 text-white rounded-r-3xl overflow-hidden h-full w-full">
         <CardContent className="p-4 md:p-8 flex flex-col h-full">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-white w-full aspect-square rounded-xl md:rounded-2xl mb-4 flex items-center justify-center qr-code-element"
+            className="bg-white w-full aspect-square rounded-xl md:rounded-2xl mb-4 flex items-center justify-center qr-code-element overflow-hidden"
             id="qr-code-element"
           >
             {children}
@@ -34,7 +34,7 @@ export default function QrPreview({ qrCode, children }: QrPreviewProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}
-            className="grid grid-cols-2 gap-2 md:gap-4 mt-auto"
+            className="grid grid-cols-2 gap-2 md:gap-4 mb-auto"
           >
             {['svg', 'png', 'jpeg', 'webp'].map((format, index) => (
               <Button
