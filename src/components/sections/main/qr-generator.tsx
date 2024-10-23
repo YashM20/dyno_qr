@@ -14,7 +14,7 @@ const QrCode = dynamic<QrCodeProps>(() => import('@/components/qr-code').then(mo
 
 export function QrGenerator() {
   const [isUpiMode, setIsUpiMode] = useState(false)
-  const [qrContent, setQrContent] = useState('')
+  const [qrContent, setQrContent] = useState('https://')
   const [upiId, setUpiId] = useState('')
   const [payeeName, setPayeeName] = useState('')
   const [amount, setAmount] = useState('')
@@ -29,7 +29,7 @@ export function QrGenerator() {
 
   // QR Code styling options
   const [qrSize, setQrSize] = useState(300)
-  const [qrType, setQrType] = useState<'canvas' | 'svg'>('svg')
+  const [qrType, setQrType] = useState<'canvas' | 'svg'>('canvas')
   const [qrDotType, setQrDotType] = useState<'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'>('square')
   const [qrDotColor, setQrDotColor] = useState('#000000')
   const [qrBackgroundColor, setQrBackgroundColor] = useState('#ffffff')
@@ -64,9 +64,9 @@ export function QrGenerator() {
 
   return (
     <div className="flex flex-col sm:flex-row h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
-        <div className="flex-grow px-4 sm:px-16 py-6 sm:py-12 overflow-y-auto">
+        <div className="flex-grow px-4 lg:px-16 py-6 lg:py-12 overflow-y-auto">
           <HomeView
             isUpiMode={isUpiMode}
             setIsUpiMode={setIsUpiMode}
@@ -104,7 +104,7 @@ export function QrGenerator() {
             setQrErrorCorrectionLevel={setQrErrorCorrectionLevel}
           />
         </div>
-        <div className="hidden sm:block w-96">
+        <div className="hidden sm:block">
           <QrPreview qrCode={qrCodeElement}>
             <Suspense fallback={<div>Loading...</div>}>
               {qrCodeElement}
@@ -125,7 +125,7 @@ export function QrGenerator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="sm:hidden fixed inset-x-0 bottom-0 bg-blue-900 rounded-t-3xl shadow-lg"
+            className="sm:hidden fixed inset-x-0 bottom-0 pb-14 bg-blue-900 rounded-t-3xl shadow-lg"
           >
             <QrPreview qrCode={qrCodeElement}>
               <Suspense fallback={<div>Loading...</div>}>

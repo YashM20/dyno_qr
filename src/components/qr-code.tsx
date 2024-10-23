@@ -1,7 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import QRCodeStyling, { Options, FileExtension } from 'qr-code-styling'
+import { Options, FileExtension } from 'qr-code-styling'
+import dynamic from 'next/dynamic'
+import QRCodeStyling from 'qr-code-styling'
+// const QRCodeStyling = dynamic(() => import('qr-code-styling').default, { ssr: false })
+// const Options = dynamic(() => import('qr-code-styling').then(mod => mod.Options), { ssr: false })
+// const FileExtension = dynamic(() => import('qr-code-styling').then(mod => mod.FileExtension), { ssr: false })
 
 export interface QrCodeProps {
   data: string
@@ -54,8 +59,12 @@ export function QrCode({
   }, [data, size, type, dotType, dotColor, backgroundColor, cornerSquareType, cornerDotType, imageUrl, imageSize, errorCorrectionLevel])
 
   const getQrOptions = (): Options => ({
+    // dynamic width and height
     width: size,
     height: size,
+    // default width and height
+    // width: "100%",
+    // height: "100%",
     type: type,
     data: data,
     image: imageUrl,
@@ -87,8 +96,6 @@ export function QrCode({
   }
 
   return (
-    <div>
-      <div ref={ref} className="qr-code-element" />
-    </div>
+    <div ref={ref} className="qr-code-element [&>canvas]:w-full [&>canvas]:h-full" />
   )
 }

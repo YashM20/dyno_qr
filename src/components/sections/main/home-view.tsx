@@ -203,7 +203,10 @@ export default function HomeView({
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <h2 className="text-2xl font-bold text-blue-900 mb-4">Generate QR Code</h2>
+      <div className="flex flex-col  justify-center">
+        <h1 className="text-4xl font-bold text-blue-900 mb-2">DynoQr</h1>
+        <h2 className="text-xl text-gray-500 mb-4">QR Code Generator</h2>
+      </div>
 
       <Tabs defaultValue={isUpiMode ? "upi" : "simple"} onValueChange={(value) => setIsUpiMode(value === "upi")}>
         <TabsList className="grid w-full grid-cols-2">
@@ -306,15 +309,18 @@ export default function HomeView({
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>QR Code Settings</span>
+          <CardTitle className="flex items-center justify-between overflow-hidden flex-wrap">
+            <span className="flex text-lg font-bold truncate">QR Code Settings</span>
             <Button
               variant="outline"
               size="sm"
+              className="flex items-center justify-between overflow-hidden gap-2 "
               onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
             >
-              <Settings className="h-4 w-4 mr-2" />
-              {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
+              <Settings className="h-4 w-4" />
+              <p className="truncate hidden sm:block">
+                {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
+              </p>
             </Button>
           </CardTitle>
         </CardHeader>
@@ -371,7 +377,7 @@ export default function HomeView({
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
                 >
-                  <div>
+                  <div className="hidden">
                     <Label htmlFor="qr-type">QR Code Type</Label>
                     <Select value={localQrType} onValueChange={(value: 'canvas' | 'svg') => setLocalQrType(value)}>
                       <SelectTrigger id="qr-type">
